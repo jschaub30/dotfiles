@@ -1,0 +1,7 @@
+# Homebrew (macOS: /opt/homebrew, Linux: /home/linuxbrew/.linuxbrew)
+for _brew in /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
+  [[ -x $_brew ]] && { eval "$($_brew shellenv)"; break; }
+done
+unset _brew
+
+export PATH="$HOME/.local/bin:$PATH"

@@ -1,0 +1,190 @@
+# Managed by chezmoi — edit with `chezmoi edit ~/.zshrc`.
+# Untracked, machine-specific tweaks go in ~/.zshrc.local. Never put secrets in either:
+# store them in 1Password and reference them from ~/.config/op/secrets.env.
+
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME=""  # prompt comes from starship
+HIST_STAMPS="yyyy-mm-dd"
+plugins=(git terraform python kubectx)
+
+fpath+=~/.zfunc
+
+source $ZSH/oh-my-zsh.sh
+
+# Enable history search with arrow keys
+bindkey '\e[A' history-search-backward
+bindkey '\e[B' history-search-forward
+
+# Disable bracketed paste
+unset zle_bracketed_paste
+
+[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
+[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
+
+# --- Paths -----------------------------------------------------------------
+export PATH="$HOME/.local/bin:$PATH"
+if [[ -n $HOMEBREW_PREFIX && -d $HOMEBREW_PREFIX/opt/openjdk@17 ]]; then
+  export PATH="$HOMEBREW_PREFIX/opt/openjdk@17/bin:$PATH"
+  export CPPFLAGS="-I$HOMEBREW_PREFIX/opt/openjdk@17/include"
+fi
+(( $+commands[go] )) && export PATH="$PATH:$(go env GOPATH)/bin"
+
+# --- Environment -----------------------------------------------------------
+export JSII_SILENCE_WARNING_UNTESTED_NODE_VERSION=1
+export AWS_PAGER=""
+export GH_PAGER=cat
+export TEMPORAL_PROFILE=dev
+export VAULT_ADDR=https://vault.octanner.net
+export ATLASSIAN_URL="octanner.atlassian.net"
+export ATLASSIAN_EMAIL="jeremy.schaub@octanner.com"
+
+# --- 1Password -------------------------------------------------------------
+# SSH keys live in 1Password and are served by the desktop app's agent.
+# Skipped over SSH so a forwarded agent keeps working.
+if [[ -z $SSH_CONNECTION ]]; then
+  for _sock in "$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock" \
+               "$HOME/.1password/agent.sock"; do
+    [[ -S $_sock ]] && { export SSH_AUTH_SOCK=$_sock; break; }
+  done
+  unset _sock
+fi
+
+# Export the secrets referenced in ~/.config/op/secrets.env into this shell.
+opsecrets() {
+  local name ref value
+  while IFS='=' read -r name ref; do
+    [[ -z $name || $name == \#* ]] && continue
+    value=$(op read "$ref") || { echo "opsecrets: failed to read $name ($ref)" >&2; return 1; }
+    export "$name=$value"
+  done < ~/.config/op/secrets.env
+}
+
+# Atlassian CLI login helper (O.C. Tanner)
+atllogin() {
+  [[ -n $ATLASSIAN_API_TOKEN ]] || opsecrets || return 1
+  local product
+  for product in jira confluence; do
+    echo "$ATLASSIAN_API_TOKEN" | acli $product auth login \
+      --site "$ATLASSIAN_URL" \
+      --email "$ATLASSIAN_EMAIL" \
+      --token
+  done
+}
+
+odplogin() {
+  [[ -n $ODP_PASSWORD ]] || opsecrets || return 1
+  odp login --username admin --password "$ODP_PASSWORD"
+}
+
+vault-env() {
+  case "$1" in
+    prod)  export VAULT_ADDR="https://vault.octanner.net" ;;
+    stage) export VAULT_ADDR="https://stage.vault.octanner.io" ;;
+    *)     echo "usage: vault-env prod|stage"; return 1 ;;
+  esac
+  export VAULT_TOKEN="$(<$HOME/.vault-tokens/$1)"
+  echo "$1 -> $VAULT_ADDR"
+}
+
+# --- Functions -------------------------------------------------------------
+work() {
+  local dir
+  dir=$(fd --type d --hidden --follow -E ".git" . ~/work 2>/dev/null |
+    fzf --preview 'tree -C {} | head -200' --height=50% --border --info=inline)
+  [[ -n $dir ]] && cd "$dir" && clear && ls -la
+}
+
+bindkey -s '^t' 'work\n'
+
+odprelease() {
+  gh release list --repo octanner/odp-terraform-modules --limit 1000 --json tagName \
+    | jq -r '.[].tagName' \
+    | awk -F'-v' '!seen[$1]++'
+}
+
+agentsync() {
+  mkdir -p ~/.claude/skills
+  for dir in ~/.agents/skills/*/; do
+    ln -s "$dir" ~/.claude/skills/"$(basename "$dir")"
+  done
+}
+
+# --- Aliases ---------------------------------------------------------------
+alias ll="ls -lha"
+
+if (( $+commands[kubectl] )); then
+  alias k="kubectl"
+  alias kc="kubectl ctx"
+  alias kns="kubectl ns"
+  alias kd="kubectl describe"
+  alias kg="kubectl get"
+fi
+
+alias tf="terraform"
+alias acs="source ~/work/OCT/cloudops-tools/aws/aws-login.sh"
+alias aws-login="source ~/work/OCT/cloudops-tools/aws/aws-login.sh"
+alias oc="odp catalog"
+alias plan="cd ~/work/jira"
+alias inv="cd ~/work/investigate"
+alias migrate="cd ~/work/odp-migration"
+alias tools="cd ~/work/OCT/cloudops-tools"
+alias catalog="cd ~/work/OCT/odp-app-catalog/"
+alias oct="cd ~/work/OCT/"
+[[ $OSTYPE == darwin* ]] && alias rdown="open -a Readdown"
+
+# --- Akkeris ---------------------------------------------------------------
+# Akkeris environment wrappers.
+#   aka -> production   (apps.octanner.io   / auth.octanner.io)
+#   akm -> dev "maru"   (appkit.maruapp.octanner.io / auth.maruapp.octanner.io,
+#                        deployed in eks-uw2-dev, DS0)
+#
+# AKKERIS_API_HOST/AKKERIS_AUTH_HOST take precedence over ~/.akkeris/config.json,
+# so each command is pinned regardless of what `auth:profile` last wrote there.
+# Tokens live in ~/.netrc keyed by API host, so both stay logged in at once.
+if (( $+commands[aka] )); then
+  export AKKERIS_PROD_API_HOST="apps.octanner.io"
+  export AKKERIS_PROD_AUTH_HOST="auth.octanner.io"
+  export AKKERIS_MARU_API_HOST="appkit.maruapp.octanner.io"
+  export AKKERIS_MARU_AUTH_HOST="auth.maruapp.octanner.io"
+
+  _akkeris_run() {
+    local api="$1" auth="$2"
+    shift 2
+    AKKERIS_API_HOST="$api" AKKERIS_AUTH_HOST="$auth" AKKERIS_UPDATES=1 \
+      command aka "$@"
+  }
+
+  aka() { _akkeris_run "$AKKERIS_PROD_API_HOST" "$AKKERIS_PROD_AUTH_HOST" "$@"; }
+  akm() { _akkeris_run "$AKKERIS_MARU_API_HOST" "$AKKERIS_MARU_AUTH_HOST" "$@"; }
+
+  _aka_yargs_completions() {
+    local reply
+    local si=$IFS
+    IFS=$'\n' reply=($(COMP_CWORD="$((CURRENT-1))" COMP_LINE="$BUFFER" COMP_POINT="$CURSOR" \
+      ${commands[aka]} --get-yargs-completions "${words[@]}"))
+    IFS=$si
+    _describe 'values' reply
+  }
+  compdef _aka_yargs_completions aka
+
+  # Completions for akm, resolved against the maru API rather than prod.
+  _akm_yargs_completions() {
+    local reply
+    local si=$IFS
+    IFS=$'\n' reply=($(COMP_CWORD="$((CURRENT-1))" COMP_LINE="$BUFFER" COMP_POINT="$CURSOR" \
+      AKKERIS_API_HOST="$AKKERIS_MARU_API_HOST" AKKERIS_AUTH_HOST="$AKKERIS_MARU_AUTH_HOST" \
+      ${commands[aka]} --get-yargs-completions "${words[@]}"))
+    IFS=$si
+    _describe 'values' reply
+  }
+  compdef _akm_yargs_completions akm
+fi
+
+# --- Prompt & plugins ------------------------------------------------------
+(( $+commands[starship] )) && eval "$(starship init zsh)"
+
+[[ -r ~/.zshrc.local ]] && source ~/.zshrc.local
+
+# Keep last: wraps ZLE widgets defined above.
+[[ -r $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]] &&
+  source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh

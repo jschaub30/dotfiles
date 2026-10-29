@@ -1,0 +1,13 @@
+{{- /* Answers are asked once on `chezmoi init` and saved to ~/.config/chezmoi/chezmoi.toml */ -}}
+{{- $name := promptStringOnce . "name" "Full name for git" "Jeremy Schaub" -}}
+{{- $email := promptStringOnce . "email" "Email for git" "jeremy.schaub@octanner.com" -}}
+{{- $opVault := promptStringOnce . "opVault" "1Password vault holding your SSH keys and secrets" "Employee" -}}
+{{- $opAgent := true -}}
+{{- if ne .chezmoi.os "darwin" -}}
+{{-   $opAgent = promptBoolOnce . "opAgent" "Use the 1Password desktop SSH agent on this machine (no for headless servers)" true -}}
+{{- end -}}
+[data]
+  name = {{ $name | quote }}
+  email = {{ $email | quote }}
+  opVault = {{ $opVault | quote }}
+  opAgent = {{ $opAgent }}

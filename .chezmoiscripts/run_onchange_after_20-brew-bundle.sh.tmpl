@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Re-runs whenever the package list below changes.
+set -euo pipefail
+
+if [[ -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+else
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
+brew bundle --file=- <<'BREWFILE'
+brew "awscli"
+brew "chezmoi"
+brew "fd"
+brew "gh"
+brew "git"
+brew "jq"
+brew "kubectx"
+brew "kubernetes-cli"
+brew "neovim"
+brew "ripgrep"
+brew "starship"
+brew "tree"
+brew "zsh-autosuggestions"
+{{- if eq .chezmoi.os "darwin" }}
+cask "1password"
+cask "1password-cli"
+cask "copilot-cli"
+cask "font-hack-nerd-font"
+{{- end }}
+BREWFILE

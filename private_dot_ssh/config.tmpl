@@ -1,0 +1,18 @@
+# Managed by chezmoi. Per-host entries (work servers, etc.) live in ~/.ssh/config.d/
+# and are not tracked. Point IdentityFile at a key's *.pub file: the private half
+# stays in 1Password and the agent signs with it.
+Include ~/.ssh/config.d/*
+
+Host github.com
+  IdentityFile ~/.ssh/id_ed25519.pub
+  IdentitiesOnly yes
+
+{{- if .opAgent }}
+
+Host *
+{{- if eq .chezmoi.os "darwin" }}
+  IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+{{- else }}
+  IdentityAgent ~/.1password/agent.sock
+{{- end }}
+{{- end }}
