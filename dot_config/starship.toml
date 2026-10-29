@@ -1,0 +1,69 @@
+# ~/.config/starship.toml
+
+command_timeout = 1000
+
+format = """
+$directory\
+$git_branch\
+$git_state\
+$git_metrics\
+$line_break\
+$kubernetes\
+$aws\
+$fill\
+$cmd_duration\
+$line_break\
+$character"""
+
+[cmd_duration]
+min_time = 500          # <-- lower for debugging; raise to 2000 later
+format   = "took [$duration]($style) "
+style    = "bold bright-blue"
+
+# === Directory ===
+[directory]
+truncation_length = 3
+truncation_symbol = "…/"
+style = "bold bright-blue"
+format = "[$path]($style)[$read_only]($read_only_style) "
+
+# === Git ===
+[git_branch]
+symbol = "🌱 "
+style = "bold bright-purple"
+format = "[$symbol$branch]($style) "
+
+[git_state]
+format = '\([$state( $progress_current/$progress_total)]($style)\) '
+style = "bold bright-red"
+
+[git_metrics]
+disabled = false
+added_style = "bold bright-green"
+deleted_style = "bold bright-red"
+
+# === Kubernetes ===
+[kubernetes]
+symbol = "☸ "
+format = '[$symbol$context( \($namespace\))]($style) '
+style = "bold bright-cyan"
+disabled = false
+
+[kubernetes.context_aliases]
+"arn:aws:eks:us-west-2:123456789012:cluster/prod-cluster" = "prod"
+
+# === AWS ===
+[aws]
+symbol = "☁️ "
+style = "bold bright-yellow"
+format = '[$symbol$profile]($style) '
+
+# === Fill ===
+[fill]
+symbol = " "
+
+# === Character ===
+[character]
+success_symbol = "[❯](bold bright-green)"
+error_symbol   = "[X](bold bright-red)"
+vicmd_symbol   = "[❮](bold bright-green)"

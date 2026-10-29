@@ -1,0 +1,6 @@
+README.md
+LICENSE
+
+{{- if not .opAgent }}
+.config/1Password
+{{- end }}
