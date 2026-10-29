@@ -8,6 +8,11 @@ else
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
+{{ if eq .chezmoi.os "darwin" -}}
+# Skip the cask when 1Password was installed some other way (brew would refuse).
+[[ -d /Applications/1Password.app ]] || brew install --cask 1password
+
+{{ end -}}
 brew bundle --file=- <<'BREWFILE'
 brew "awscli"
 brew "chezmoi"
@@ -23,7 +28,6 @@ brew "starship"
 brew "tree"
 brew "zsh-autosuggestions"
 {{- if eq .chezmoi.os "darwin" }}
-cask "1password"
 cask "1password-cli"
 cask "copilot-cli"
 cask "font-hack-nerd-font"
