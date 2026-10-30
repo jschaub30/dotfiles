@@ -14,9 +14,8 @@ else
 fi
 
 if [[ $(getent passwd "$USER" | cut -d: -f7) != */zsh ]]; then
-  echo "Making zsh your login shell"
-  # sudo avoids the password prompt, which fails on key-only accounts (e.g. ubuntu on EC2)
-  sudo chsh -s "$(command -v zsh)" "$USER" || echo "chsh failed; run: sudo chsh -s $(command -v zsh) $USER" >&2
+  echo "Making zsh your login shell (may ask for your password)"
+  chsh -s "$(command -v zsh)" || echo "chsh failed; run: chsh -s $(command -v zsh)" >&2
 fi
 {{- end }}
 
