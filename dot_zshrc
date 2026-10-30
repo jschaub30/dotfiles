@@ -76,6 +76,11 @@ odplogin() {
   odp login --username admin --password "$ODP_PASSWORD"
 }
 
+akalogin() {
+  [[ -n $AKKERIS_PASSWORD ]] || opsecrets || return 1
+  aka login --username "$AKKERIS_USERNAME" --password "$AKKERIS_PASSWORD"
+}
+
 vault-env() {
   case "$1" in
     prod)  export VAULT_ADDR="https://vault.octanner.net" ;;
