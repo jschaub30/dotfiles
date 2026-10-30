@@ -15,6 +15,9 @@ zsh + oh-my-zsh + starship, managed with [chezmoi](https://chezmoi.io). Works on
 
 ## New machine
 
+On a Linux account with no password (e.g. `ubuntu` on EC2), set one first: `sudo passwd $USER`.
+The install runs `chsh` to make zsh your login shell, and `chsh` prompts for it.
+
 ```sh
 sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.cache/chezmoi-bootstrap init --apply jschaub30
 ```
