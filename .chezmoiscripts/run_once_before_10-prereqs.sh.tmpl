@@ -12,15 +12,13 @@ else
   echo "Unsupported distro: install curl, git, zsh and a compiler, then re-run chezmoi apply." >&2
   exit 1
 fi
-{{- end }}
 
-if [[ ! -x /opt/homebrew/bin/brew && ! -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
-  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-fi
-
-{{ if eq .chezmoi.os "linux" -}}
 if [[ $(getent passwd "$USER" | cut -d: -f7) != */zsh ]]; then
   echo "Making zsh your login shell (may ask for your password)"
   chsh -s "$(command -v zsh)" || echo "chsh failed; run: chsh -s $(command -v zsh)" >&2
 fi
 {{- end }}
+
+if [[ ! -x /opt/homebrew/bin/brew && ! -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi

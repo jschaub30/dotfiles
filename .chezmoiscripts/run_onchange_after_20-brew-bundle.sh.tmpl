@@ -8,6 +8,10 @@ else
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
+# Brew refuses to load formulae from untrusted taps.
+brew tap redpanda-data/tap
+brew trust redpanda-data/tap
+
 brew bundle --file=- <<'BREWFILE'
 tap "redpanda-data/tap"
 
@@ -17,7 +21,6 @@ brew "fd"
 brew "gh"
 brew "git"
 brew "jq"
-brew "kafka"
 brew "kubectx"
 brew "kubernetes-cli"
 brew "neovim"
