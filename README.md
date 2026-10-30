@@ -25,8 +25,7 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.cache/chezmoi-bootstrap init --app
 The bootstrap binary is throwaway; Homebrew installs the chezmoi you use afterwards.
 
 It asks for your name, email and 1Password vault (and on Linux, whether this machine runs the
-1Password desktop app). The repo is private, so authenticate first (`gh auth login`) or use
-`init --apply git@github.com:jschaub30/dotfiles.git` with a forwarded SSH agent.
+1Password desktop app).
 
 Then:
 
