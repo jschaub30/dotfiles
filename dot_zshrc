@@ -181,6 +181,7 @@ fi
 # --- Prompt & plugins ------------------------------------------------------
 (( $+commands[starship] )) && eval "$(starship init zsh)"
 (( $+commands[mise] )) && eval "$(mise activate zsh)"
+(( $+commands[fzf] )) && source <(fzf --zsh)
 
 [[ -r ~/.zshrc.local ]] && source ~/.zshrc.local
 
