@@ -121,8 +121,6 @@ if (( $+commands[kubectl] )); then
 fi
 
 alias tf="terraform"
-alias acs="source ~/work/OCT/cloudops-tools/aws/aws-login.sh"
-alias aws-login="source ~/work/OCT/cloudops-tools/aws/aws-login.sh"
 alias oc="odp catalog"
 alias plan="cd ~/work/jira"
 alias inv="cd ~/work/investigate"
