@@ -27,10 +27,11 @@ It asks for your name, email and 1Password vault (and on Linux, whether this mac
 
 Then:
 
-1. Open 1Password, sign in, and turn on **Settings → Developer → Use the SSH agent** and
+1. Start a new shell so zsh, Homebrew and `~/.local/bin` are on your PATH: `exec zsh -l`
+   (on Linux, if zsh isn't active yet, log out and back in).
+2. Open 1Password, sign in, and turn on **Settings → Developer → Use the SSH agent** and
    **Integrate with 1Password CLI**.
-2. `twg login` and `gh auth login`.
-3. Start a new shell.
+3. `twg login` and `gh auth login`.
 
 The first apply copies any files it replaces to `~/.dotfiles-backup/<timestamp>/`, and moves an
 existing `~/.ssh/config` to `~/.ssh/config.d/hosts`.
