@@ -11,12 +11,16 @@ fi
 # Brew refuses to load formulae from untrusted taps.
 brew tap redpanda-data/tap
 brew trust redpanda-data/tap
+brew tap coralogix/tap
+brew trust coralogix/tap
 
 brew bundle --file=- <<'BREWFILE'
 tap "redpanda-data/tap"
+tap "coralogix/tap"
 
 brew "awscli"
 brew "chezmoi"
+brew "coralogix/tap/cx"
 brew "fd"
 brew "fzf"
 brew "gh"
@@ -37,6 +41,7 @@ brew "zsh-autosuggestions"
 cask "1password"
 cask "1password-cli"
 cask "copilot-cli"
+cask "gcloud-cli"
 cask "font-hack-nerd-font"
 {{- end }}
 BREWFILE
