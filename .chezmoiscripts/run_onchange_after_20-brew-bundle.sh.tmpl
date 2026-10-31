@@ -8,7 +8,21 @@ else
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
+{{- if .work }}
+# Brew refuses to load formulae from untrusted taps.
+brew tap redpanda-data/tap
+brew trust redpanda-data/tap
+brew tap coralogix/tap
+brew trust coralogix/tap
+{{- end }}
+
 brew bundle --file=- <<'BREWFILE'
+{{- if .work }}
+tap "redpanda-data/tap"
+tap "coralogix/tap"
+brew "coralogix/tap/cx"
+brew "redpanda-data/tap/redpanda"
+{{- end }}
 brew "awscli"
 brew "chezmoi"
 brew "fd"

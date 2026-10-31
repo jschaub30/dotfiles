@@ -59,6 +59,7 @@ opsecrets() {
   done < ~/.config/op/secrets.env
 }
 
+{{- if .work }}
 # Atlassian CLI login helper (O.C. Tanner)
 atllogin() {
   [[ -n $ATLASSIAN_API_TOKEN ]] || opsecrets || return 1
@@ -91,6 +92,8 @@ vault-env() {
   echo "$1 -> $VAULT_ADDR"
 }
 
+{{- end }}
+
 # --- Functions -------------------------------------------------------------
 work() {
   local dir
@@ -101,11 +104,13 @@ work() {
 
 bindkey -s '^t' 'work\n'
 
+{{- if .work }}
 odprelease() {
   gh release list --repo octanner/odp-terraform-modules --limit 1000 --json tagName \
     | jq -r '.[].tagName' \
     | awk -F'-v' '!seen[$1]++'
 }
+{{- end }}
 
 agentsync() {
   mkdir -p ~/.claude/skills
@@ -126,6 +131,7 @@ if (( $+commands[kubectl] )); then
 fi
 
 alias tf="terraform"
+{{- if .work }}
 alias oc="odp catalog"
 alias plan="cd ~/work/jira"
 alias inv="cd ~/work/investigate"
@@ -133,8 +139,10 @@ alias migrate="cd ~/work/odp-migration"
 alias tools="cd ~/work/OCT/cloudops-tools"
 alias catalog="cd ~/work/OCT/odp-app-catalog/"
 alias oct="cd ~/work/OCT/"
+{{- end }}
 [[ $OSTYPE == darwin* ]] && alias rdown="open -a Readdown"
 
+{{- if .work }}
 # --- Akkeris ---------------------------------------------------------------
 # Akkeris environment wrappers.
 #   aka -> production   (apps.octanner.io   / auth.octanner.io)
@@ -182,6 +190,7 @@ if (( $+commands[aka] )); then
   }
   compdef _akm_yargs_completions akm
 fi
+{{- end }}
 
 # --- Prompt & plugins ------------------------------------------------------
 (( $+commands[starship] )) && eval "$(starship init zsh)"

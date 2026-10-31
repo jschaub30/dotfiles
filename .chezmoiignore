@@ -4,3 +4,6 @@ LICENSE
 {{- if not .opAgent }}
 .config/1Password
 {{- end }}
+
+# Per-machine public keys: each machine has its own key in 1Password.
+.ssh/id_*.pub
