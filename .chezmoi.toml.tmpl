@@ -1,7 +1,9 @@
 {{- /* Answers are asked once on `chezmoi init` and saved to ~/.config/chezmoi/chezmoi.toml */ -}}
 {{- $work := promptBoolOnce . "work" "Is this a work machine (installs O.C. Tanner tools)" false -}}
+{{- $workEmail := "" -}}
+{{- if $work }}{{ $workEmail = promptStringOnce . "workEmail" "Work email (kept only on this machine)" "" }}{{ end -}}
 {{- $name := promptStringOnce . "name" "Full name for git" "Jeremy Schaub" -}}
-{{- $email := promptStringOnce . "email" "Email for git" (ternary "WORK_EMAIL" "" $work) -}}
+{{- $email := promptStringOnce . "email" "Email for git" $workEmail -}}
 {{- $opVault := promptStringOnce . "opVault" "1Password vault holding your SSH keys and secrets" "Private" -}}
 {{- $opAgent := true -}}
 {{- if ne .chezmoi.os "darwin" -}}
@@ -9,6 +11,7 @@
 {{- end -}}
 [data]
   work = {{ $work }}
+  workEmail = {{ $workEmail | quote }}
   name = {{ $name | quote }}
   email = {{ $email | quote }}
   opVault = {{ $opVault | quote }}
