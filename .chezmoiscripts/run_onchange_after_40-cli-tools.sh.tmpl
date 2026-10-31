@@ -10,8 +10,6 @@ else
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
-command -v aka >/dev/null || npm install -g akkeris
-
 command -v claude >/dev/null || curl -fsSL https://claude.ai/install.sh | bash
 command -v twg >/dev/null ||
   bash <(curl -fsSL https://teamwork-graph.atlassian.com/cli/install) --yes --skip-login --skip-skills
