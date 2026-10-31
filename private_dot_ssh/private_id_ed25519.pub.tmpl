@@ -1,0 +1,13 @@
+{{- /* Public half of this machine's GitHub key, read from its 1Password SSH Key item.
+     If op is missing or 1Password is locked, keep whatever key file is already here
+     (an empty result would make chezmoi delete it). Rerun `chezmoi apply` once unlocked. */ -}}
+{{- $key := "" -}}
+{{- if lookPath "op" -}}
+{{-   $ref := printf "op://%s/%s/public key" .opVault .sshKeyItem -}}
+{{-   $key = output "sh" "-c" (printf "op read %s 2>/dev/null || true" (quote $ref)) | trim -}}
+{{- end -}}
+{{- if not $key -}}
+{{-   $key = output "sh" "-c" "cat \"$HOME/.ssh/id_ed25519.pub\" 2>/dev/null || true" | trim -}}
+{{- end -}}
+{{- if $key }}{{ $key }}
+{{ end -}}
