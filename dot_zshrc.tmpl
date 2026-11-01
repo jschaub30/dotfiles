@@ -3,6 +3,8 @@
 # store them in 1Password and reference them from ~/.config/op/secrets.env.
 
 export ZSH="$HOME/.oh-my-zsh"
+# chezmoi refreshes oh-my-zsh from a tarball (.chezmoiexternal.toml); the git updater conflicts with it
+DISABLE_AUTO_UPDATE="true"
 ZSH_THEME=""  # prompt comes from starship
 HIST_STAMPS="yyyy-mm-dd"
 plugins=(git terraform python kubectx aws)
