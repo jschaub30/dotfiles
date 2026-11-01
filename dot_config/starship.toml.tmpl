@@ -3,6 +3,10 @@
 command_timeout = 1000
 
 format = """
+{{- if eq .chezmoi.os "linux" }}
+$os\
+$hostname\
+{{- end }}
 $directory\
 $git_branch\
 $git_state\
@@ -62,8 +66,30 @@ format = '[$symbol$profile]($style) '
 [fill]
 symbol = " "
 
+{{- if eq .chezmoi.os "linux" }}
+
+# === Linux host badge (visual cue: not on the Mac) ===
+[os]
+disabled = false
+format = "[$symbol]($style)"
+style = "bold fg:white bg:#d75f00"
+
+[os.symbols]
+Linux = " 🐧"
+Ubuntu = " 🐧"
+Debian = " 🐧"
+Amazon = " 🐧"
+
+[hostname]
+ssh_only = false
+format = "[ $hostname ]($style) "
+style = "bold fg:white bg:#d75f00"
+{{- end }}
+
 # === Character ===
+{{- $arrow := "bold bright-green" }}
+{{- if eq .chezmoi.os "linux" }}{{ $arrow = "bold #ff8700" }}{{ end }}
 [character]
-success_symbol = "[❯](bold bright-green)"
+success_symbol = "[❯]({{ $arrow }})"
 error_symbol   = "[X](bold bright-red)"
-vicmd_symbol   = "[❮](bold bright-green)"
+vicmd_symbol   = "[❮]({{ $arrow }})"
