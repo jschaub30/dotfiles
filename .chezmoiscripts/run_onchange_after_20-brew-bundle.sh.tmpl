@@ -14,14 +14,20 @@ brew tap redpanda-data/tap
 brew trust redpanda-data/tap
 brew tap coralogix/tap
 brew trust coralogix/tap
+brew tap rundeck/rundeck-cli
+brew trust rundeck/rundeck-cli
 {{- end }}
 
 brew bundle --file=- <<'BREWFILE'
 {{- if .work }}
 tap "redpanda-data/tap"
 tap "coralogix/tap"
+tap "rundeck/rundeck-cli"
 brew "coralogix/tap/cx"
 brew "redpanda-data/tap/redpanda"
+# rd needs Java but its formula doesn't declare it; ~/.zshrc puts openjdk@17 on PATH.
+brew "openjdk@17"
+brew "rundeck/rundeck-cli/rundeck-cli"
 {{- end }}
 brew "awscli"
 brew "chezmoi"

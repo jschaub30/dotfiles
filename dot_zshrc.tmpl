@@ -134,6 +134,7 @@ fi
 alias tf="terraform"
 {{- if .work }}
 alias oc="odp catalog"
+unalias rd 2>/dev/null  # oh-my-zsh's rd=rmdir shadows the Rundeck CLI
 alias plan="cd ~/work/jira"
 alias inv="cd ~/work/investigate"
 alias migrate="cd ~/work/odp-migration"
