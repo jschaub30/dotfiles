@@ -21,7 +21,6 @@ bindkey '\e[B' history-search-forward
 unset zle_bracketed_paste
 
 [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
-[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
 
 # --- Paths -----------------------------------------------------------------
 export PATH="$HOME/.local/bin:$PATH"
