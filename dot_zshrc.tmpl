@@ -198,6 +198,15 @@ fi
 (( $+commands[mise] )) && eval "$(mise activate zsh)"
 (( $+commands[fzf] )) && source <(fzf --zsh)
 
+# iTerm2: tint Linux sessions via a "Linux" profile; revert to "Default" on
+# the Mac. LC_TERMINAL survives ssh (SendEnv/AcceptEnv LC_*). Skip in tmux.
+if [[ "$LC_TERMINAL" == "iTerm2" && -z "$TMUX" ]]; then
+  _iterm_set_profile() {
+    printf '\e]1337;SetProfile=%s\a' '{{ if eq .chezmoi.os "linux" }}Linux{{ else }}Default{{ end }}'
+  }
+  precmd_functions+=(_iterm_set_profile)
+fi
+
 [[ -r ~/.zshrc.local ]] && source ~/.zshrc.local
 
 # Keep last: wraps ZLE widgets defined above.
