@@ -22,4 +22,18 @@ command -v twg >/dev/null ||
 {{- if ne .chezmoi.os "darwin" }}
 # `gh copilot` runs whichever copilot binary is on PATH; on macOS it's a brew cask.
 command -v copilot >/dev/null || curl -fsSL https://gh.io/copilot-install | bash
+
+# gcloud (a brew cask on macOS): Google's tarball into ~/google-cloud-sdk, where the
+# oh-my-zsh gcloud plugin finds it. Update with `gcloud components update`.
+if [[ ! -x "$HOME/google-cloud-sdk/bin/gcloud" ]]; then
+  case "$(uname -m)" in
+    x86_64) gcloud_arch=x86_64 ;;
+    aarch64 | arm64) gcloud_arch=arm ;;
+    *) echo "gcloud: unsupported arch $(uname -m)" >&2; exit 1 ;;
+  esac
+  curl -fsSL "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-linux-${gcloud_arch}.tar.gz" |
+    tar -xz -C "$HOME"
+  "$HOME/google-cloud-sdk/install.sh" --quiet --usage-reporting=false \
+    --path-update=false --command-completion=false
+fi
 {{- end }}
