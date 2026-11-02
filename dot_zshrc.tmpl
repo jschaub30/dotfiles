@@ -126,6 +126,21 @@ work() {
 
 bindkey -s '^t' 'work\n'
 
+{{- if eq .chezmoi.os "linux" }}
+
+# Copy stdin to the local (Mac) clipboard over SSH via an OSC 52 escape.
+# Needs iTerm2's "Applications in terminal may access clipboard" setting.
+pbcopy() {
+  local data
+  data=$(base64 | tr -d '\n')
+  if [[ -n $TMUX ]]; then
+    printf '\ePtmux;\e\e]52;c;%s\a\e\\' "$data" > /dev/tty  # tmux passthrough
+  else
+    printf '\e]52;c;%s\a' "$data" > /dev/tty
+  fi
+}
+{{- end }}
+
 {{- if .work }}
 odprelease() {
   gh release list --repo octanner/odp-terraform-modules --limit 1000 --json tagName \
