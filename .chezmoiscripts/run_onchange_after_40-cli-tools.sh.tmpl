@@ -36,4 +36,10 @@ if [[ ! -x "$HOME/google-cloud-sdk/bin/gcloud" ]]; then
   "$HOME/google-cloud-sdk/install.sh" --quiet --usage-reporting=false \
     --path-update=false --command-completion=false
 fi
+
+# Headless Chromium for rasterizing HTML/SVG figures to PNG (on macOS, Google
+# Chrome does this). Browsers land in ~/.cache/ms-playwright; bump the version
+# here to update.
+command -v playwright >/dev/null || npm install -g playwright@1.48.2
+compgen -G "$HOME/.cache/ms-playwright/chromium*" >/dev/null || playwright install chromium
 {{- end }}
