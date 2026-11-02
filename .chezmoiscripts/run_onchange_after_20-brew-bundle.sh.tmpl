@@ -12,8 +12,6 @@ fi
 # Brew refuses to load formulae from untrusted taps.
 brew tap redpanda-data/tap
 brew trust redpanda-data/tap
-brew tap coralogix/tap
-brew trust coralogix/tap
 brew tap rundeck/rundeck-cli
 brew trust rundeck/rundeck-cli
 {{- end }}
@@ -21,9 +19,8 @@ brew trust rundeck/rundeck-cli
 brew bundle --file=- <<'BREWFILE'
 {{- if .work }}
 tap "redpanda-data/tap"
-tap "coralogix/tap"
 tap "rundeck/rundeck-cli"
-brew "coralogix/tap/cx"
+brew "cx"
 brew "redpanda-data/tap/redpanda"
 brew "glab"
 # rd needs Java but its formula doesn't declare it; ~/.zshrc puts openjdk@17 on PATH.
