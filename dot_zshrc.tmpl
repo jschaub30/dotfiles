@@ -40,6 +40,7 @@ export ATLASSIAN_URL="octanner.atlassian.net"
 export ATLASSIAN_EMAIL="{{ .workEmail }}"
 export RD_URL=https://rundeck-1.octanner.net
 export GITLAB_HOST=scc-gitlab-1.dev.octanner.net
+export CX_REGION=us2  # octanner.app.cx498.coralogix.com
 
 # --- 1Password -------------------------------------------------------------
 # SSH keys live in 1Password and are served by the desktop app's agent.
@@ -90,6 +91,11 @@ akalogin() {
 glab() {
   [[ -n $GITLAB_TOKEN ]] || opsecrets || return 1
   command glab "$@"
+}
+
+cx() {
+  [[ -n $CX_API_KEY ]] || opsecrets || return 1
+  command cx "$@"
 }
 
 unalias rd 2>/dev/null  # oh-my-zsh's rd=rmdir shadows the Rundeck CLI
