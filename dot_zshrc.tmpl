@@ -85,6 +85,19 @@ akalogin() {
   aka login --username "$AKKERIS_USERNAME" --password "$AKKERIS_PASSWORD"
 }
 
+# CLIs that read a token from the environment on every run: load the secrets
+# on first use instead of at shell startup.
+glab() {
+  [[ -n $GITLAB_TOKEN ]] || opsecrets || return 1
+  command glab "$@"
+}
+
+unalias rd 2>/dev/null  # oh-my-zsh's rd=rmdir shadows the Rundeck CLI
+rd() {
+  [[ -n $RD_TOKEN ]] || opsecrets || return 1
+  command rd "$@"
+}
+
 vault-env() {
   case "$1" in
     prod)  export VAULT_ADDR="https://vault.octanner.net" ;;
@@ -136,7 +149,6 @@ fi
 alias tf="terraform"
 {{- if .work }}
 alias oc="odp catalog"
-unalias rd 2>/dev/null  # oh-my-zsh's rd=rmdir shadows the Rundeck CLI
 alias plan="cd ~/work/jira"
 alias inv="cd ~/work/investigate"
 alias migrate="cd ~/work/odp-migration"
