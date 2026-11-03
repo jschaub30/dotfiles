@@ -26,6 +26,7 @@ brew "glab"
 # rd needs Java but its formula doesn't declare it; ~/.zshrc puts openjdk@17 on PATH.
 brew "openjdk@17"
 brew "rundeck/rundeck-cli/rundeck-cli"
+brew "postgresql@17"
 {{- end }}
 brew "awscli"
 brew "chezmoi"
@@ -50,6 +51,9 @@ cask "1password"
 cask "1password-cli"
 cask "copilot-cli"
 cask "gcloud-cli"
+{{- if .work }}
+cask "docker-desktop"
+{{- end }}
 cask "font-hack-nerd-font"
 {{- end }}
 BREWFILE
