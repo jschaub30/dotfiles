@@ -14,12 +14,15 @@ brew tap redpanda-data/tap
 brew trust redpanda-data/tap
 brew tap rundeck/rundeck-cli
 brew trust rundeck/rundeck-cli
+brew tap hashicorp/tap
+brew trust hashicorp/tap
 {{- end }}
 
 brew bundle --file=- <<'BREWFILE'
 {{- if .work }}
 tap "redpanda-data/tap"
 tap "rundeck/rundeck-cli"
+tap "hashicorp/tap"
 brew "cx"
 brew "redpanda-data/tap/redpanda"
 brew "glab"
@@ -27,6 +30,7 @@ brew "glab"
 brew "openjdk@17"
 brew "rundeck/rundeck-cli/rundeck-cli"
 brew "postgresql@17"
+brew "hashicorp/tap/vault"
 {{- end }}
 brew "awscli"
 brew "chezmoi"
