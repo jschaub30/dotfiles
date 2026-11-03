@@ -165,6 +165,7 @@ if (( $+commands[kubectl] )); then
   alias kns="kubectl ns"
   alias kd="kubectl describe"
   alias kg="kubectl get"
+  alias kgp="kubectl get"
 fi
 
 alias tf="terraform"
@@ -173,8 +174,8 @@ alias oc="odp catalog"
 alias plan="cd ~/work/jira"
 alias inv="cd ~/work/investigate"
 alias migrate="cd ~/work/odp-migration"
-alias tools="cd ~/work/OCT/cloudops-tools"
-alias catalog="cd ~/work/OCT/odp-app-catalog/"
+alias tools="cd ~/work/OCT/platform/cloudops-tools"
+alias catalog="cd ~/work/OCT/platform/odp-app-catalog/"
 alias oct="cd ~/work/OCT/"
 {{- end }}
 [[ $OSTYPE == darwin* ]] && alias rdown="open -a Readdown"
