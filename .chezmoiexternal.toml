@@ -3,3 +3,9 @@
   url = "https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz"
   stripComponents = 1
   refreshPeriod = "168h"
+
+# Output-style skill for Claude Code, invoked with /i-have-adhd. Pinned to a
+# reviewed commit; read the new SKILL.md before bumping it.
+[".claude/skills/i-have-adhd/SKILL.md"]
+  type = "file"
+  url = "https://raw.githubusercontent.com/ayghri/i-have-adhd/1ecea1993b7fce257ffbd686c070948b5e07eda6/skills/i-have-adhd/SKILL.md"
