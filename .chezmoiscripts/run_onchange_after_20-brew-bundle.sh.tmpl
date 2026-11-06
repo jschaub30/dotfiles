@@ -16,6 +16,8 @@ brew tap rundeck/rundeck-cli
 brew trust rundeck/rundeck-cli
 brew tap hashicorp/tap
 brew trust hashicorp/tap
+brew tap temporalio/brew
+brew trust temporalio/brew
 {{- end }}
 
 brew bundle --file=- <<'BREWFILE'
@@ -23,6 +25,7 @@ brew bundle --file=- <<'BREWFILE'
 tap "redpanda-data/tap"
 tap "rundeck/rundeck-cli"
 tap "hashicorp/tap"
+tap "temporalio/brew"
 brew "cx"
 brew "redpanda-data/tap/redpanda"
 brew "glab"
@@ -31,6 +34,8 @@ brew "openjdk@17"
 brew "rundeck/rundeck-cli/rundeck-cli"
 brew "postgresql@17"
 brew "hashicorp/tap/vault"
+brew "temporal"
+brew "temporalio/brew/tcld"
 {{- end }}
 brew "awscli"
 brew "chezmoi"
