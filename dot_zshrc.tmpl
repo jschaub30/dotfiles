@@ -28,6 +28,10 @@ if [[ -n $HOMEBREW_PREFIX && -d $HOMEBREW_PREFIX/opt/openjdk@17 ]]; then
   export PATH="$HOMEBREW_PREFIX/opt/openjdk@17/bin:$PATH"
   export CPPFLAGS="-I$HOMEBREW_PREFIX/opt/openjdk@17/include"
 fi
+# postgresql@17 is keg-only; put psql and friends on PATH.
+if [[ -n $HOMEBREW_PREFIX && -d $HOMEBREW_PREFIX/opt/postgresql@17 ]]; then
+  export PATH="$HOMEBREW_PREFIX/opt/postgresql@17/bin:$PATH"
+fi
 (( $+commands[go] )) && export PATH="$PATH:$(go env GOPATH)/bin"
 
 # --- Environment -----------------------------------------------------------
