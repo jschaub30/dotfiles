@@ -186,17 +186,15 @@ alias oct="cd ~/work/OCT/"
 
 {{- if .work }}
 # --- Akkeris ---------------------------------------------------------------
-# Akkeris environment wrappers.
-#   aka -> production   (apps.octanner.io   / auth.octanner.io)
+# Akkeris environment wrapper.
+#   aka -> the plain CLI, unwrapped (uses ~/.akkeris/config.json as usual)
 #   akm -> dev "maru"   (appkit.maruapp.octanner.io / auth.maruapp.octanner.io,
 #                        deployed in eks-uw2-dev, DS0)
 #
 # AKKERIS_API_HOST/AKKERIS_AUTH_HOST take precedence over ~/.akkeris/config.json,
-# so each command is pinned regardless of what `auth:profile` last wrote there.
+# so akm is pinned regardless of what `auth:profile` last wrote there.
 # Tokens live in ~/.netrc keyed by API host, so both stay logged in at once.
 if (( $+commands[aka] )); then
-  export AKKERIS_PROD_API_HOST="apps.octanner.io"
-  export AKKERIS_PROD_AUTH_HOST="auth.octanner.io"
   export AKKERIS_MARU_API_HOST="appkit.maruapp.octanner.io"
   export AKKERIS_MARU_AUTH_HOST="auth.maruapp.octanner.io"
 
@@ -207,7 +205,6 @@ if (( $+commands[aka] )); then
       command aka "$@"
   }
 
-  aka() { _akkeris_run "$AKKERIS_PROD_API_HOST" "$AKKERIS_PROD_AUTH_HOST" "$@"; }
   akm() { _akkeris_run "$AKKERIS_MARU_API_HOST" "$AKKERIS_MARU_AUTH_HOST" "$@"; }
 
   _aka_yargs_completions() {
